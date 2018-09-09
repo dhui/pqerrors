@@ -3,6 +3,7 @@
 [![Build Status](https://img.shields.io/travis/dhui/pqerrors/master.svg)](https://travis-ci.org/dhui/pqerrors)
 [![GoDoc](https://godoc.org/github.com/dhui/pqerrors?status.svg)](https://godoc.org/github.com/dhui/pqerrors)
 ![Supported Go Versions](https://img.shields.io/badge/Go-1.11-lightgrey.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/dhui/pqerrors)](https://goreportcard.com/report/github.com/dhui/pqerrors)
 [![GitHub Release](https://img.shields.io/github/release/dhui/pqerrors.svg)](https://github.com/dhui/pqerrors/releases)
 
 pqerrors is a Go library that provides constants to make handling [pq](https://github.com/lib/pq) errors easier
