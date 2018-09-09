@@ -10,32 +10,27 @@ import (
 	"github.com/lib/pq"
 )
 
-func ExampleClass() {
+func Example() {
 	pqErr := pq.Error{Code: pq.ErrorCode("23505")}
 	var err error = pqErr // err from database/sql
 	if e, ok := err.(pq.Error); ok {
+		// Example usage of pqerrcls
 		switch e.Code.Class() {
 		case pqerrcls.IntegrityConstraintViolation:
-			fmt.Println("Success!")
+			fmt.Println("Class success!")
 		default:
 			fmt.Println("Unexpected error class:", e.Code.Class(), e.Code.Class().Name())
 		}
-	}
-	// Output:
-	// Success!
-}
 
-func ExampleCode() {
-	pqErr := pq.Error{Code: pq.ErrorCode("23505")}
-	var err error = pqErr // err from database/sql
-	if e, ok := err.(pq.Error); ok {
+		// Example usage of pqerrcode
 		switch e.Code {
 		case pqerrcode.IntegrityConstraintViolationUniqueViolation:
-			fmt.Println("Success!")
+			fmt.Println("Code success!")
 		default:
 			fmt.Println("Unexpected error code:", e.Code, e.Code.Name())
 		}
 	}
 	// Output:
-	// Success!
+	// Class success!
+	// Code success!
 }
