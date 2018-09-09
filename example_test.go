@@ -5,7 +5,8 @@ import (
 )
 
 import (
-	"github.com/dhui/pqerrors"
+	"github.com/dhui/pqerrors/pqerrcls"
+	"github.com/dhui/pqerrors/pqerrcode"
 	"github.com/lib/pq"
 )
 
@@ -14,7 +15,7 @@ func ExampleClass() {
 	var err error = pqErr // err from database/sql
 	if e, ok := err.(pq.Error); ok {
 		switch e.Code.Class() {
-		case pqerrors.PqErrClassIntegrityConstraintViolation:
+		case pqerrcls.IntegrityConstraintViolation:
 			fmt.Println("Success!")
 		default:
 			fmt.Println("Unexpected error class:", e.Code.Class(), e.Code.Class().Name())
@@ -29,7 +30,7 @@ func ExampleCode() {
 	var err error = pqErr // err from database/sql
 	if e, ok := err.(pq.Error); ok {
 		switch e.Code {
-		case pqerrors.PqErrCodeIntegrityConstraintViolationUniqueViolation:
+		case pqerrcode.IntegrityConstraintViolationUniqueViolation:
 			fmt.Println("Success!")
 		default:
 			fmt.Println("Unexpected error code:", e.Code, e.Code.Name())

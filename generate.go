@@ -17,6 +17,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
@@ -27,6 +28,7 @@ import (
 
 const (
 	errClassPrefix = "Class "
+	filename       = "consts.go"
 )
 
 const (
@@ -122,7 +124,7 @@ func GetErrorCodes(lines []string) []ErrorCode {
 
 // TmplCtx is passed to template.Execute()
 type TmplCtx struct {
-	Prefix        string
+	PkgName       string
 	PqConstructor string
 	Consts        interface{}
 }
@@ -147,11 +149,11 @@ func GenSource(tmpl *template.Template, tmplCtx TmplCtx) []byte {
 }
 
 func main() {
-	var tableFilename, classesFilename, codesFilename string
+	var tableFilename, classesPkg, codesPkg string
 	flag.StringVar(&tableFilename, "errorsTable", "errors_table.txt",
 		"Filename of Postgres errors table, sourced from: https://www.postgresql.org/docs/10/static/errcodes-appendix.html")
-	flag.StringVar(&classesFilename, "classesFile", "error_classes.go", "Filename of generated Go code for pq ErrorClasses")
-	flag.StringVar(&codesFilename, "codesFile", "error_codes.go", "Filename of generated Go code for pq ErrorCodes")
+	flag.StringVar(&classesPkg, "classesPkg", "pqerrcls", "Name of package containing generated Go code for pq ErrorClass constants")
+	flag.StringVar(&codesPkg, "codesPkg", "pqerrcode", "Name of package containing generated Go code for pq ErrorCodeConstants")
 	flag.Parse()
 
 	tableFile, err := os.Open(tableFilename)
@@ -174,16 +176,22 @@ func main() {
 		log.Fatal("Failed to parse Go source code template:", err)
 	}
 
-	errClassCtx := TmplCtx{Prefix: "PqErrClass", PqConstructor: "pq.ErrorClass",
-		Consts: GetErrorClasses(tableLines)}
+	errClassCtx := TmplCtx{
+		PkgName:       classesPkg,
+		PqConstructor: "pq.ErrorClass",
+		Consts:        GetErrorClasses(tableLines)}
 	errClassSrc := GenSource(tmpl, errClassCtx)
-	errCodeCtx := TmplCtx{Prefix: "PqErrCode", PqConstructor: "pq.ErrorCode",
-		Consts: GetErrorCodes(tableLines)}
+	errCodeCtx := TmplCtx{
+		PkgName:       codesPkg,
+		PqConstructor: "pq.ErrorCode",
+		Consts:        GetErrorCodes(tableLines)}
 	errCodeSrc := GenSource(tmpl, errCodeCtx)
 
+	var classesFilename = filepath.Join(classesPkg, filename)
 	if err := ioutil.WriteFile(classesFilename, errClassSrc, fileWriteMode); err != nil {
 		log.Fatal("Failed to write", classesFilename, "error:", err)
 	}
+	var codesFilename = filepath.Join(codesPkg, filename)
 	if err := ioutil.WriteFile(codesFilename, errCodeSrc, fileWriteMode); err != nil {
 		log.Fatal("Failed to write", codesFilename, "error:", err)
 	}
@@ -191,11 +199,13 @@ func main() {
 }
 
 const tmpl = `
+// Package {{.PkgName}} provides consts for {{.PqConstructor}}
+//
 // DO NOT EDIT
 //
 // Code is auto-generated
 
-package pqerrors
+package {{.PkgName}}
 
 import (
 "github.com/lib/pq"
@@ -203,7 +213,7 @@ import (
 
 const (
 {{range .Consts -}}
-{{$.Prefix}}{{.SafeVarName}} = {{$.PqConstructor}}("{{.String}}")
+{{.SafeVarName}} = {{$.PqConstructor}}("{{.String}}")
 {{end}}
 )
 `

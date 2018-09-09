@@ -16,9 +16,9 @@ pqerrors is a Go library that provides constants to make handling [pq](https://g
     var err error // err from database/sql
     if e, ok := err.(pq.Error); ok {
         switch e.Code.Class() {
-        case pqerrors.PqErrClassNoData:
+        case pqerrcls.NoData:
              // Handle error
-        case pqerrors.PqErrClassIntegrityConstraintViolation:
+        case pqerrcls.IntegrityConstraintViolation:
              // Handle error
         default:
             // Handle unexpected error
@@ -32,9 +32,9 @@ pqerrors is a Go library that provides constants to make handling [pq](https://g
     var err error // err from database/sql
     if e, ok := err.(pq.Error); ok {
         switch e.Code {
-        case pqerrors.PqErrCodeDataExceptionNullValueNotAllowed:
+        case pqerrcode.DataExceptionNullValueNotAllowed:
              // Handle error
-        case pqerrors.PqErrCodeIntegrityConstraintViolationUniqueViolation:
+        case pqerrcode.IntegrityConstraintViolationUniqueViolation:
              // Handle error
         default:
             // Handle unexpected error
