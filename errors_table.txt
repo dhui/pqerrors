@@ -66,6 +66,7 @@ Class 22 — Data Exception
 22P06 	nonstandard_use_of_escape_character
 22010 	invalid_indicator_parameter_value
 22023 	invalid_parameter_value
+22013 	invalid_preceding_or_following_size
 2201B 	invalid_regular_expression
 2201W 	invalid_row_count_in_limit_clause
 2201X 	invalid_row_count_in_result_offset_clause
